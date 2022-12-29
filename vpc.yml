@@ -46,15 +46,21 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet
 
+  MyInstanceKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: NewVpcKeyPair
+      PublicKeyMaterial: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCEIsB9im2NUCKk41j2wSqUU5sl+sbQn5W/96B+QRXUMtxWzPMKR1yzOfFYFF3t4FnyrTj1rez84Ae0kGKbWfFkni9YbaAmYNBEp2Yuw4N1NmlbF9xHsKAGmOHqqfn4RnkXJB6/ZoCUqEpyMza+Zlrb9UHOr2plzPk9hJoWb5XqejQRFhFBv1MnlQp7sDGC9kM009T7uGIDabtNGVcW3qH3a4doMVEq0fH1FrWdwusqPOin4mAy1GLPz1HNGBOtBVzib4B2xM6W20Ph2ZgbbcLXQMw4AujFQyXF8NkZqNPWbICQSE9szsdHED0oq3TL6Kyivlgp8wLfMdZdcNB/HTVN
+
   MyInstance:
     Type : 'AWS::EC2::Instance'
     Properties:
       SubnetId: !Ref PublicSubnet
       ImageId: !Ref LatestAmiId
       InstanceType: t2.micro
+      KeyName: !Ref MyInstanceKeyPair
       SecurityGroupIds:
-        - Ref: SSHSecurityGroup #use : instead of !
-        - Ref: ServerSecurityGroup
+        - Ref: ServerSecurityGroup #use : instead of !
       UserData:
         Fn::Base64: !Sub
           #!/bin/bash
@@ -65,6 +71,17 @@ Resources:
           cd /var/www/html
           echo "<br>" >> index.html
           echo "<h1>Hello World" > /var/www/html/index.html
+    
+  MyInstance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PublicSubnet
+      InstanceType: t2.micro
+      KeyName: !Ref MyInstanceKeyPair
+      SecurityGroupIds:
+        - !Ref SSHSecurityGroup
+      SubnetId: !Ref PublicSubnet
 
   SSHSecurityGroup:
     Type: AWS::EC2::SecurityGroup

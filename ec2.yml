@@ -5,11 +5,18 @@ Parameters:
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
 Resources:
+  MyInstanceKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: NewKeyPair
+      PublicKeyMaterial: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCEIsB9im2NUCKk41j2wSqUU5sl+sbQn5W/96B+QRXUMtxWzPMKR1yzOfFYFF3t4FnyrTj1rez84Ae0kGKbWfFkni9YbaAmYNBEp2Yuw4N1NmlbF9xHsKAGmOHqqfn4RnkXJB6/ZoCUqEpyMza+Zlrb9UHOr2plzPk9hJoWb5XqejQRFhFBv1MnlQp7sDGC9kM009T7uGIDabtNGVcW3qH3a4doMVEq0fH1FrWdwusqPOin4mAy1GLPz1HNGBOtBVzib4B2xM6W20Ph2ZgbbcLXQMw4AujFQyXF8NkZqNPWbICQSE9szsdHED0oq3TL6Kyivlgp8wLfMdZdcNB/HTVN
+
   MyInstance:
     Type : 'AWS::EC2::Instance'
     Properties:
       ImageId: !Ref LatestAmiId
       InstanceType: t2.micro
+      KeyName: !Ref MyInstanceKeyPair
       SecurityGroups:
         - Ref: SSHSecurityGroup #use : instead of !
         - Ref: ServerSecurityGroup
